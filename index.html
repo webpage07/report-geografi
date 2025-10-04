@@ -24,29 +24,6 @@
         color: #006699;
         margin-bottom: 20px;
     }
-    #loginBox {
-        text-align: center;
-    }
-    input[type="text"] {
-        padding: 10px;
-        width: 250px;
-        border-radius: 8px;
-        border: 1px solid #888;
-        margin-top: 10px;
-    }
-    button {
-        padding: 10px 25px;
-        margin-top: 10px;
-        background-color: #0099cc;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    button:hover {
-        background-color: #0077aa;
-    }
     table {
         width: 100%;
         border-collapse: collapse;
@@ -67,110 +44,69 @@
     tr:nth-child(even) {
         background-color: #f5f5f5;
     }
-    #logoutBtn {
-        background-color: #e74c3c;
-    }
-    #logoutBtn:hover {
-        background-color: #c0392b;
-    }
-    .hidden {
-        display: none;
+    #loading {
+        text-align: center;
+        color: #006699;
+        font-style: italic;
+        margin-top: 20px;
     }
 </style>
 </head>
 <body>
 <div class="container">
     <h2>Laporan Nilai Geografi</h2>
-
-    <div id="loginBox">
-        <p>Masukkan NISN untuk melihat laporan nilai:</p>
-        <input type="text" id="nisnInput" placeholder="Masukkan NISN Anda">
-        <br>
-        <button onclick="login()">Login</button>
-        <p id="loginError" style="color:red;display:none;">❌ NISN tidak terdaftar!</p>
-    </div>
-
-    <div id="reportBox" class="hidden">
-        <button id="logoutBtn" onclick="logout()">Logout</button>
-        <table id="nilaiTable">
-            <thead>
-                <tr>
-                    <th>NISN</th>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Tugas 1 Konsep Geografi</th>
-                    <th>Tugas 2 Diagram Cabang Ilmu Geografi</th>
-                    <th>Tugas 3 Contoh Prinsip Geografi</th>
-                    <th>Tugas 4 Perkembangan Ilmu Geografi</th>
-                    <th>Catatan Dasar Geografi</th>
-                    <th>Sumatif harian 1 Dasar Geografi</th>
-                    <th>Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri</th>
-                    <th>Tugas 6 Menghitung Skala Peta</th>
-                    <th>Tugas 7 Menghitung Skala Foto Udara</th>
-                    <th>Tugas 8 Manfaat SIG</th>
-                    <th>Catatan Peta, Pengindraan Jauh, SIG</th>
-                    <th>Sumatif harian 2 Peta PJ SIG</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-    </div>
+    <div id="loading">⏳ Memuat data dari Google Sheet...</div>
+    <table id="nilaiTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>NISN</th>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Tugas 1 Konsep Geografi</th>
+                <th>Tugas 2 Diagram Cabang Ilmu Geografi</th>
+                <th>Tugas 3 Contoh Prinsip Geografi</th>
+                <th>Tugas 4 Perkembangan Ilmu Geografi</th>
+                <th>Catatan Dasar Geografi</th>
+                <th>Sumatif harian 1 Dasar Geografi</th>
+                <th>Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri</th>
+                <th>Tugas 6 Menghitung Skala Peta</th>
+                <th>Tugas 7 Menghitung Skala Foto Udara</th>
+                <th>Tugas 8 Manfaat SIG</th>
+                <th>Catatan Peta, Pengindraan Jauh, SIG</th>
+                <th>Sumatif harian 2 Peta PJ SIG</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
 </div>
 
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
-const validNISN = [
-    "0097758369",
-    "0097931054",
-    "0093693520",
-    "0103307505",
-    "0102108205",
-    "0102371225",
-    "0094238385"
-];
-
-let dataCache = [];
 
 async function loadData() {
-    const res = await fetch(SHEET_URL);
-    const csv = await res.text();
-    const rows = csv.split("\n").map(r => r.split(","));
-    const headers = rows[0];
-    const data = rows.slice(1).map(row => {
-        let obj = {};
-        headers.forEach((h, i) => obj[h.trim()] = row[i] ? row[i].trim() : "");
-        return obj;
-    });
-    dataCache = data;
+    try {
+        const res = await fetch(SHEET_URL);
+        const csv = await res.text();
+        const rows = csv.split("\n").map(r => r.split(","));
+        const headers = rows[0];
+        const data = rows.slice(1).map(row => {
+            let obj = {};
+            headers.forEach((h, i) => obj[h.trim()] = row[i] ? row[i].trim() : "");
+            return obj;
+        });
+        renderTable(data);
+    } catch (e) {
+        document.getElementById("loading").innerHTML = "⚠️ Gagal memuat data!";
+    }
 }
 
-async function login() {
-    const nisn = document.getElementById("nisnInput").value.trim();
-    const errorMsg = document.getElementById("loginError");
-
-    if (!validNISN.includes(nisn)) {
-        errorMsg.style.display = "block";
-        return;
-    }
-
-    errorMsg.style.display = "none";
-
-    if (dataCache.length === 0) await loadData();
-
-    const siswaData = dataCache.filter(row => row["NISN"] === nisn);
-
-    if (siswaData.length === 0) {
-        alert("Data nilai tidak ditemukan untuk NISN ini.");
-        return;
-    }
-
-    document.getElementById("loginBox").classList.add("hidden");
-    document.getElementById("reportBox").classList.remove("hidden");
-
+function renderTable(data) {
+    const table = document.getElementById("nilaiTable");
     const tbody = document.getElementById("tableBody");
-    tbody.innerHTML = "";
+    document.getElementById("loading").style.display = "none";
+    table.style.display = "table";
 
-    siswaData.forEach(row => {
+    data.forEach(row => {
         const tr = document.createElement("tr");
         [
             "NISN",
@@ -197,11 +133,7 @@ async function login() {
     });
 }
 
-function logout() {
-    document.getElementById("reportBox").classList.add("hidden");
-    document.getElementById("loginBox").classList.remove("hidden");
-    document.getElementById("nisnInput").value = "";
-}
+loadData();
 </script>
 </body>
 </html>
