@@ -114,30 +114,13 @@
     animation: spin 1s linear infinite;
     margin: 20px auto;
   }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @media print {
-    body {
-      background: white;
-      padding: 0;
-    }
-    .search-box, .print-btn, h1 {
-      display: none;
-    }
-    .card {
-      box-shadow: none;
-      border: none;
-    }
-    table th {
-      background: #e3f2fd;
-      color: #000;
-    }
+    body { background: white; padding: 0; }
+    .search-box, .print-btn, h1 { display: none; }
+    .card { box-shadow: none; border: none; }
+    table th { background: #e3f2fd; color: #000; }
   }
 </style>
 </head>
@@ -165,6 +148,25 @@
       "0094238385": "AYRA DIAH AGNESA",
       "0105461165": "AZHAR HIDAYAT DHARMA ATMOKO"
     };
+
+    // Urutan kolom yang ditampilkan
+    const kolomTertentu = [
+      "NISN",
+      "NAMA",
+      "KELAS",
+      "Tugas 1 Konsep Geografi",
+      "Tugas 2 Diagram Cabang Ilmu Geografi",
+      "Tugas 3 Contoh Prinsip Geografi",
+      "Tugas 4 Perkembangan Ilmu Geografi",
+      "Catatan Dasar Geografi",
+      "Sumatif harian 1 Dasar Geografi",
+      "Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri",
+      "Tugas 6 Menghitung Skala Peta",
+      "Tugas 7 Menghitung Skala Foto Udara",
+      "Tugas 8 Manfaat SIG",
+      "Catatan Peta, Pengindraan Jauh, SIG",
+      "Sumatif harian 2 Peta PJ SIG"
+    ];
 
     let dataSiswa = [];
 
@@ -208,12 +210,12 @@
 
       const judul = `<h2>${nisnList[nisn]} (${siswa.KELAS || "Kelas Tidak Tersedia"})</h2><p><strong>NISN:</strong> ${siswa.NISN}</p>`;
       
-      let tabel = `<table><thead><tr><th>Komponen Nilai</th><th>Nilai</th></tr></thead><tbody>`;
-      for (const [k, v] of Object.entries(siswa)) {
-        if (k !== "NISN" && k !== "NAMA" && k !== "KELAS") {
-          tabel += `<tr><td>${k}</td><td>${v}</td></tr>`;
+      let tabel = `<table><thead><tr><th>Komponen</th><th>Nilai</th></tr></thead><tbody>`;
+      kolomTertentu.forEach(k => {
+        if (siswa[k] !== undefined && k !== "NISN" && k !== "NAMA" && k !== "KELAS") {
+          tabel += `<tr><td>${k}</td><td>${siswa[k]}</td></tr>`;
         }
-      }
+      });
       tabel += `</tbody></table>`;
 
       hasilDiv.innerHTML = `
