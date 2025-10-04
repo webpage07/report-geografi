@@ -4,197 +4,197 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laporan Nilai Geografi</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@400;600&display=swap');
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
 
-    body {
-        background: radial-gradient(circle at top, #020024, #090979, #00d4ff);
-        font-family: 'Poppins', sans-serif;
-        color: #fff;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 40px 20px;
-    }
+  .container {
+    width: 90%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
 
-    h1 {
-        font-family: 'Orbitron', sans-serif;
-        color: #00ffff;
-        font-size: 2em;
-        text-shadow: 0 0 15px #00ffff;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+    font-weight: 700;
+  }
 
-    .search-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.3);
-        border: 2px solid #00ffff;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 0 20px #00ffff80;
-        width: 90%;
-        max-width: 500px;
-    }
+  .login {
+    text-align: center;
+  }
 
-    input {
-        padding: 12px 15px;
-        border: none;
-        outline: none;
-        border-radius: 10px;
-        width: 100%;
-        text-align: center;
-        font-size: 1em;
-        margin-bottom: 15px;
-        background: rgba(255, 255, 255, 0.1);
-        color: #00ffff;
-        font-family: 'Orbitron', sans-serif;
-        box-shadow: inset 0 0 10px #00ffff50;
-    }
+  input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 60%;
+    margin-bottom: 20px;
+    font-size: 1em;
+    text-align: center;
+  }
 
-    button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #00ffff, #0077ff);
-        color: #000;
-        font-weight: bold;
-        cursor: pointer;
-        font-family: 'Orbitron', sans-serif;
-        transition: all 0.3s;
-    }
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #00c6ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 
-    button:hover {
-        background: linear-gradient(90deg, #00d4ff, #00ffaa);
-        box-shadow: 0 0 15px #00ffff;
-    }
+  button:hover {
+    background-color: #0072ff;
+  }
 
-    table {
-        width: 100%;
-        max-width: 1000px;
-        margin-top: 30px;
-        border-collapse: collapse;
-        border-radius: 12px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.05);
-        box-shadow: 0 0 25px #00ffff40;
-        animation: fadeIn 0.8s ease-in-out;
-    }
+  .nilai-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
 
-    th, td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+  .nilai-table th, .nilai-table td {
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px;
+    text-align: center;
+  }
 
-    th {
-        background: rgba(0, 255, 255, 0.2);
-        color: #00ffff;
-        text-shadow: 0 0 10px #00ffff;
-        font-weight: 600;
-    }
+  .nilai-table th {
+    background: rgba(255,255,255,0.2);
+  }
 
-    tr:hover {
-        background: rgba(0, 255, 255, 0.1);
-    }
+  #chartContainer {
+    margin-top: 30px;
+  }
 
-    @keyframes fadeIn {
-        from {opacity: 0; transform: translateY(20px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
+  .back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    background: #ff4081;
+  }
 
-    #result {
-        margin-top: 20px;
-        text-align: center;
-        font-size: 1.2em;
-        color: #00ffff;
-        text-shadow: 0 0 10px #00ffff;
-    }
 </style>
 </head>
 <body>
-    <h1>Laporan Nilai Geografi</h1>
-    <div class="search-box">
-        <input type="text" id="nisnInput" placeholder="Masukkan NISN siswa...">
-        <button onclick="cariData()">Tampilkan Nilai</button>
-    </div>
 
-    <div id="result"></div>
-    <table id="tabelNilai" style="display:none;">
-        <thead>
-            <tr>
-                <th>NISN</th>
-                <th>Nama</th>
-                <th>Kelas</th>
-                <th>Tugas 1 Konsep Geografi</th>
-                <th>Tugas 2 Diagram Cabang Ilmu Geografi</th>
-                <th>Tugas 3 Contoh Prinsip Geografi</th>
-                <th>Tugas 4 Perkembangan Ilmu Geografi</th>
-                <th>Catatan Dasar Geografi</th>
-                <th>Sumatif Harian 1 Dasar Geografi</th>
-                <th>Tugas 5</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div class="container">
+  <h2>Laporan Nilai Geografi</h2>
+
+  <!-- Login Section -->
+  <div id="loginSection" class="login">
+    <p>Masukkan NISN untuk melihat nilai:</p>
+    <input type="text" id="nisnInput" placeholder="Masukkan NISN">
+    <br>
+    <button onclick="login()">Lihat Nilai</button>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboard" style="display:none;">
+    <h3 id="studentName"></h3>
+    <table class="nilai-table" id="nilaiTable"></table>
+
+    <div id="chartContainer">
+      <canvas id="nilaiChart"></canvas>
+    </div>
+    <button class="back-btn" onclick="logout()">Kembali</button>
+  </div>
+</div>
 
 <script>
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
+const dataSiswa = [
+  { NISN: "0097758369", NAMA: "AIRA PUTRI OKTAVIANI", KELAS: "X 1", nilai: [0,80,80,60,0,1,70,75,60,0,0] },
+  { NISN: "0097931054", NAMA: "AIRISH BILAL NABAWI", KELAS: "X 1", nilai: [0,95,100,0,0,1,75,0,0,0,0] },
+  { NISN: "0093693520", NAMA: "ALDHO JUNADIL ILHAM", KELAS: "X 1", nilai: [59,75,80,0,0,0,78,75,20,0,0] },
+  { NISN: "0103307505", NAMA: "ALICIA PUTRI DEVINIRA", KELAS: "X 1", nilai: [70,80,80,67,0,1,80,75,100,77,0] },
+  { NISN: "0102108205", NAMA: "ANNISA NUR SYIFA", KELAS: "X 1", nilai: [70,80,100,0,63,30,80,75,60,0,0] },
+  { NISN: "0102371225", NAMA: "ARYA BHIMA SUTANARENDRA HADIUSODO", KELAS: "X 1", nilai: [75,80,80,0,60,15,80,100,60,75,0] },
+  { NISN: "0094238385", NAMA: "AYRA DIAH AGNESA", KELAS: "X 1", nilai: [75,100,80,0,63,10,70,75,60,75,0] },
+  { NISN: "0105461165", NAMA: "AZHAR HIDAYAT DHARMA ATMOKO", KELAS: "X 1", nilai: [100,100,98,0,67,15,85,100,60,90,0] },
+  { NISN: "0097206174", NAMA: "CAHYA KAMILA", KELAS: "X 1", nilai: [75,75,85,0,63,10,75,75,40,85,82] },
+  { NISN: "0095735226", NAMA: "CARISSA ARUNI WIDYADHANA", KELAS: "X 1", nilai: [75,100,80,0,67,1,70,75,60,78,82] },
+  { NISN: "0101727711", NAMA: "CHESTA KAYNA MOZABI", KELAS: "X 1", nilai: [75,90,85,0,63,2,80,100,60,75,0] }
+];
 
-let dataSheet = [];
+const namaKolom = [
+  "Tugas 1 Konsep Geografi",
+  "Tugas 2 Diagram Cabang Ilmu Geografi",
+  "Tugas 3 Contoh Prinsip Geografi",
+  "Tugas 4 Perkembangan Ilmu Geografi",
+  "Catatan Dasar Geografi",
+  "Sumatif Harian 1 Dasar Geografi",
+  "Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri",
+  "Tugas 6 Menghitung Skala Peta",
+  "Tugas 7 Menghitung Skala Foto Udara",
+  "Tugas 8 Manfaat SIG",
+  "Catatan Peta, Pengindraan Jauh, SIG"
+];
 
-fetch(sheetURL)
-    .then(res => res.text())
-    .then(csv => {
-        const rows = csv.split("\n").map(r => r.split(","));
-        const headers = rows[0];
-        dataSheet = rows.slice(1).map(r => {
-            let obj = {};
-            headers.forEach((h, i) => obj[h.trim()] = r[i] ? r[i].trim() : "");
-            return obj;
-        });
-    });
+let chart;
 
-function cariData() {
-    const nisn = document.getElementById("nisnInput").value.trim();
-    const resultDiv = document.getElementById("result");
-    const table = document.getElementById("tabelNilai");
-    const tbody = table.querySelector("tbody");
+function login() {
+  const nisn = document.getElementById("nisnInput").value.trim();
+  const siswa = dataSiswa.find(s => s.NISN === nisn);
+  
+  if (!siswa) {
+    alert("NISN tidak ditemukan!");
+    return;
+  }
 
-    if (!nisn) {
-        resultDiv.textContent = "⚠️ Masukkan NISN terlebih dahulu.";
-        table.style.display = "none";
-        return;
+  document.getElementById("loginSection").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("studentName").innerHTML = `<strong>${siswa.NAMA}</strong> (${siswa.KELAS})`;
+
+  const table = document.getElementById("nilaiTable");
+  table.innerHTML = "<tr><th>Komponen</th><th>Nilai</th></tr>";
+  namaKolom.forEach((nama, i) => {
+    table.innerHTML += `<tr><td>${nama}</td><td>${siswa.nilai[i]}</td></tr>`;
+  });
+
+  const ctx = document.getElementById('nilaiChart').getContext('2d');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: namaKolom.map((n, i) => `T${i+1}`),
+      datasets: [{
+        label: 'Nilai',
+        data: siswa.nilai,
+        backgroundColor: 'rgba(0, 255, 255, 0.5)',
+        borderColor: '#00ffff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100
+        }
+      }
     }
+  });
+}
 
-    const siswa = dataSheet.find(d => d["NISN"] === nisn);
-
-    if (siswa) {
-        resultDiv.textContent = `✅ Data ditemukan untuk ${siswa["Nama"]}`;
-        table.style.display = "table";
-        tbody.innerHTML = `
-            <tr>
-                <td>${siswa["NISN"]}</td>
-                <td>${siswa["NAMA"] || siswa["Nama"] || "-"}</td>
-                <td>${siswa["KELAS"] || "-"}</td>
-                <td>${siswa["Tugas 1 Konsep Geografi"] || "-"}</td>
-                <td>${siswa["Tugas 2 Diagram Cabang Ilmu Geografi"] || "-"}</td>
-                <td>${siswa["Tugas 3 Contoh Prinsip Geografi"] || "-"}</td>
-                <td>${siswa["Tugas 4 Perkembangan Ilmu Geografi"] || "-"}</td>
-                <td>${siswa["Catatan Dasar Geografi"] || "-"}</td>
-                <td>${siswa["Sumatif harian 1 Dasar Geografi"] || "-"}</td>
-                <td>${siswa["Tugas 5"] || "-"}</td>
-            </tr>
-        `;
-    } else {
-        resultDiv.textContent = "❌ NISN tidak ditemukan dalam database.";
-        table.style.display = "none";
-    }
+function logout() {
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+  document.getElementById("nisnInput").value = "";
 }
 </script>
 </body>
