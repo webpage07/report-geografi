@@ -13,8 +13,8 @@
     }
     .container {
         max-width: 1100px;
-        margin: 60px auto;
-        background: rgba(255, 255, 255, 0.9);
+        margin: 50px auto;
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 15px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         padding: 30px;
@@ -24,22 +24,34 @@
         color: #006699;
         margin-bottom: 20px;
     }
+    #searchBox {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    #searchInput {
+        width: 300px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #aaa;
+        font-size: 14px;
+    }
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 25px;
+        margin-top: 15px;
     }
     th, td {
         border: 1px solid #ccc;
         padding: 8px;
         text-align: center;
-        font-size: 14px;
+        font-size: 13px;
     }
     th {
         background-color: #0099cc;
         color: white;
         position: sticky;
         top: 0;
+        z-index: 1;
     }
     tr:nth-child(even) {
         background-color: #f5f5f5;
@@ -55,7 +67,13 @@
 <body>
 <div class="container">
     <h2>Laporan Nilai Geografi</h2>
+
+    <div id="searchBox">
+        <input type="text" id="searchInput" placeholder="Cari NISN atau Nama siswa...">
+    </div>
+
     <div id="loading">⏳ Memuat data dari Google Sheet...</div>
+
     <table id="nilaiTable" style="display:none;">
         <thead>
             <tr>
@@ -83,6 +101,8 @@
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
 
+let allData = [];
+
 async function loadData() {
     try {
         const res = await fetch(SHEET_URL);
@@ -94,6 +114,7 @@ async function loadData() {
             headers.forEach((h, i) => obj[h.trim()] = row[i] ? row[i].trim() : "");
             return obj;
         });
+        allData = data;
         renderTable(data);
     } catch (e) {
         document.getElementById("loading").innerHTML = "⚠️ Gagal memuat data!";
@@ -105,6 +126,7 @@ function renderTable(data) {
     const tbody = document.getElementById("tableBody");
     document.getElementById("loading").style.display = "none";
     table.style.display = "table";
+    tbody.innerHTML = "";
 
     data.forEach(row => {
         const tr = document.createElement("tr");
@@ -132,6 +154,16 @@ function renderTable(data) {
         tbody.appendChild(tr);
     });
 }
+
+// 🔍 Fungsi pencarian
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    const keyword = this.value.toLowerCase();
+    const filtered = allData.filter(row =>
+        row["NISN"].toLowerCase().includes(keyword) ||
+        row["NAMA"].toLowerCase().includes(keyword)
+    );
+    renderTable(filtered);
+});
 
 loadData();
 </script>
