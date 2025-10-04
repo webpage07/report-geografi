@@ -37,18 +37,17 @@
     width: 100%;
     border-collapse: collapse;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   th, td {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ccc;
   }
 
   th {
     background: #34495e;
     color: white;
-    cursor: pointer;
   }
 
   tr:nth-child(even) {
@@ -103,40 +102,63 @@
   </div>
 
 <script>
-  const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
 
-  async function loadData() {
-    const response = await fetch(sheetURL);
-    const data = await response.text();
-    const rows = data.split("\n").map(r => r.split(","));
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
+// Daftar kolom yang ditampilkan (harus sama urutannya dengan header di Google Sheet)
+const allowedColumns = [
+  "NISN",
+  "NAMA",
+  "KELAS",
+  "Tugas 1 Konsep Geografi",
+  "Tugas 2 Diagram Cabang Ilmu Geografi",
+  "Tugas 3 Contoh Prinsip Geografi",
+  "Tugas 4 Perkembangan Ilmu Geografi",
+  "Catatan Dasar Geografi",
+  "Sumatif harian 1 Dasar Geografi",
+  "Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri",
+  "Tugas 6 Menghitung Skala Peta",
+  "Tugas 7 Menghitung Skala Foto Udara",
+  "Tugas 8 Manfaat SIG",
+  "Catatan Peta, Pengindraan Jauh, SIG",
+  "Sumatif harian 2 Peta PJ SIG"
+];
 
-    for (let i = 1; i < rows.length; i++) {
-      const cols = rows[i];
-      if (cols.length < 3) continue;
-      const tr = document.createElement("tr");
-      cols.forEach(c => {
-        const td = document.createElement("td");
-        td.textContent = c.trim();
-        tr.appendChild(td);
-      });
-      tableBody.appendChild(tr);
-    }
-  }
+async function loadData() {
+  const response = await fetch(sheetURL);
+  const data = await response.text();
+  const rows = data.split("\n").map(r => r.split(","));
+  const headers = rows[0].map(h => h.trim());
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = "";
 
-  // Fitur pencarian
-  document.getElementById("searchInput").addEventListener("keyup", function() {
-    const value = this.value.toLowerCase();
-    const rows = document.querySelectorAll("#tableBody tr");
-    rows.forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(value) ? "" : "none";
+  // Ambil indeks kolom yang diperlukan
+  const indexes = allowedColumns.map(col => headers.indexOf(col));
+
+  for (let i = 1; i < rows.length; i++) {
+    const cols = rows[i];
+    if (cols.length < 3) continue;
+
+    const tr = document.createElement("tr");
+    indexes.forEach(idx => {
+      const td = document.createElement("td");
+      td.textContent = cols[idx] ? cols[idx].trim() : "";
+      tr.appendChild(td);
     });
-  });
+    tableBody.appendChild(tr);
+  }
+}
 
-  // Muat data saat halaman dibuka
-  loadData();
+// Fitur pencarian
+document.getElementById("searchInput").addEventListener("keyup", function() {
+  const value = this.value.toLowerCase();
+  const rows = document.querySelectorAll("#tableBody tr");
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(value) ? "" : "none";
+  });
+});
+
+loadData();
 </script>
 </body>
 </html>
