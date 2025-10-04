@@ -29,7 +29,7 @@
     flex-wrap: wrap;
     justify-content: center;
   }
-  select {
+  input[type="text"] {
     padding: 10px 15px;
     width: 280px;
     border: 2px solid #90caf9;
@@ -37,9 +37,8 @@
     outline: none;
     transition: 0.3s;
     font-size: 15px;
-    background: white;
   }
-  select:focus {
+  input[type="text"]:focus {
     border-color: #1976d2;
     box-shadow: 0 0 5px #1976d2;
   }
@@ -136,15 +135,7 @@
   <h1>📘 Sistem Cek Nilai Online Geografi</h1>
 
   <div class="search-box">
-    <select id="nisnSelect">
-      <option value="">Pilih NISN Siswa...</option>
-      <option value="0097758369">0097758369</option>
-      <option value="0097931054">0097931054</option>
-      <option value="0093693520">0093693520</option>
-      <option value="0103307505">0103307505</option>
-      <option value="0102108205">0102108205</option>
-      <option value="0102371225">0102371225</option>
-    </select>
+    <input type="text" id="nisnInput" placeholder="Ketikkan NISN Anda...">
     <button onclick="cariNilai()">Cari Nilai</button>
   </div>
 
@@ -152,6 +143,14 @@
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
+    const nisnValid = [
+      "0097758369",
+      "0097931054",
+      "0093693520",
+      "0103307505",
+      "0102108205",
+      "0102371225"
+    ];
     let dataSiswa = [];
 
     async function loadData() {
@@ -167,12 +166,18 @@
     }
 
     async function cariNilai() {
-      const nisn = document.getElementById("nisnSelect").value.trim();
+      const nisn = document.getElementById("nisnInput").value.trim();
       const hasilDiv = document.getElementById("hasil");
       hasilDiv.innerHTML = "";
 
       if (!nisn) {
-        hasilDiv.innerHTML = "<p class='notfound'>⚠️ Silakan pilih NISN terlebih dahulu.</p>";
+        hasilDiv.innerHTML = "<p class='notfound'>⚠️ Silakan masukkan NISN terlebih dahulu.</p>";
+        return;
+      }
+
+      // Cek apakah NISN terdaftar dalam daftar yang diizinkan
+      if (!nisnValid.includes(nisn)) {
+        hasilDiv.innerHTML = "<p class='notfound'>❌ NISN tidak terdaftar atau salah. Silakan periksa kembali.</p>";
         return;
       }
 
@@ -181,7 +186,7 @@
       const siswa = dataSiswa.find(s => s.NISN === nisn);
 
       if (!siswa) {
-        hasilDiv.innerHTML = "<p class='notfound'>❌ Data dengan NISN tersebut tidak ditemukan di Google Sheet.</p>";
+        hasilDiv.innerHTML = "<p class='notfound'>❌ Data nilai tidak ditemukan di Google Sheet.</p>";
         return;
       }
 
