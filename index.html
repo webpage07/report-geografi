@@ -1,126 +1,198 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Nilai Siswa Geografi</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Nilai Siswa Geografi</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #e1f5fe);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 40px 10px;
+  }
+  h1 {
+    color: #0d47a1;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  input[type="text"] {
+    padding: 10px 15px;
+    width: 280px;
+    border: 2px solid #90caf9;
+    border-radius: 12px;
+    outline: none;
+    transition: 0.3s;
+    font-size: 15px;
+  }
+  input[type="text"]:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 5px #1976d2;
+  }
+  button {
+    padding: 10px 20px;
+    border: none;
+    background: #1976d2;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 15px;
+  }
+  button:hover {
+    background: #0d47a1;
+  }
+  .card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 25px 30px;
+    width: 95%;
+    max-width: 900px;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  .card h2 {
+    color: #1565c0;
+    margin-bottom: 10px;
+  }
+  .print-btn {
+    display: inline-block;
+    margin-top: 15px;
+    background: #43a047;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  .print-btn:hover {
+    background: #2e7d32;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  th, td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+  }
+  th {
+    background-color: #bbdefb;
+    color: #0d47a1;
+  }
+  tr:hover td {
+    background: #e3f2fd;
+  }
+  .notfound {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Tampilan cetak */
+  @media print {
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #eef2f3, #d9e2ec);
-      margin: 0;
-      padding: 20px;
-      color: #333;
+      background: white;
+      padding: 0;
     }
-    h1 {
-      text-align: center;
-      color: #1d3557;
-      margin-bottom: 20px;
+    .search-box, .print-btn, h1 {
+      display: none;
     }
-    #table-container {
-      overflow-x: auto;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    .card {
+      box-shadow: none;
+      border: none;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
+    table th {
+      background: #e3f2fd;
+      color: #000;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px 10px;
-      text-align: center;
-    }
-    th {
-      background: #1d3557;
-      color: white;
-      position: sticky;
-      top: 0;
-    }
-    tr:nth-child(even) {
-      background-color: #f7f9fc;
-    }
-    tr:hover {
-      background-color: #e9f3ff;
-    }
-    .loading {
-      text-align: center;
-      font-weight: bold;
-      color: #457b9d;
-    }
-    .search-box {
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    input[type="text"] {
-      padding: 8px;
-      width: 300px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <h1>Laporan Nilai Siswa Geografi</h1>
-  
+  <h1>📘 Sistem Cek Nilai Online Geografi</h1>
+
   <div class="search-box">
-    <input type="text" id="search" placeholder="Cari berdasarkan NISN atau Nama...">
+    <input type="text" id="nisnInput" placeholder="Masukkan NISN siswa...">
+    <button onclick="cariNilai()">Cari Nilai</button>
   </div>
 
-  <div id="table-container">
-    <div class="loading">Memuat data dari Google Sheet...</div>
-    <table id="nilaiTable" style="display:none;">
-      <thead>
-        <tr id="tableHeader"></tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+  <div id="hasil"></div>
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
+    let dataSiswa = [];
 
     async function loadData() {
-      try {
-        const response = await fetch(sheetUrl);
-        const data = await response.text();
-        const rows = data.split("\n").map(r => r.split(","));
-        const headers = rows[0];
-        const tableHeader = document.getElementById("tableHeader");
-        const tableBody = document.getElementById("tableBody");
-
-        // Buat header
-        tableHeader.innerHTML = headers.map(h => `<th>${h.trim()}</th>`).join("");
-
-        // Buat isi tabel
-        rows.slice(1).forEach(row => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = row.map(cell => `<td>${cell.trim()}</td>`).join("");
-          tableBody.appendChild(tr);
-        });
-
-        document.querySelector(".loading").style.display = "none";
-        document.getElementById("nilaiTable").style.display = "table";
-      } catch (error) {
-        document.querySelector(".loading").textContent = "Gagal memuat data!";
-        console.error(error);
-      }
+      const res = await fetch(sheetUrl);
+      const text = await res.text();
+      const rows = text.trim().split("\n").map(r => r.split(","));
+      const headers = rows[0];
+      dataSiswa = rows.slice(1).map(r => {
+        let obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = (r[i] || "").trim());
+        return obj;
+      });
     }
 
-    // Fungsi pencarian
-    document.getElementById("search").addEventListener("keyup", function() {
-      const value = this.value.toLowerCase();
-      const rows = document.querySelectorAll("#tableBody tr");
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(value) ? "" : "none";
-      });
-    });
+    async function cariNilai() {
+      const nisn = document.getElementById("nisnInput").value.trim();
+      const hasilDiv = document.getElementById("hasil");
+      hasilDiv.innerHTML = "";
 
-    loadData();
+      if (!nisn) {
+        hasilDiv.innerHTML = "<p class='notfound'>⚠️ Silakan masukkan NISN terlebih dahulu.</p>";
+        return;
+      }
+
+      if (dataSiswa.length === 0) await loadData();
+
+      const siswa = dataSiswa.find(s => s.NISN === nisn);
+
+      if (!siswa) {
+        hasilDiv.innerHTML = "<p class='notfound'>❌ Data dengan NISN tersebut tidak ditemukan.</p>";
+        return;
+      }
+
+      const judul = `<h2>${siswa.NAMA} (${siswa.KELAS})</h2><p><strong>NISN:</strong> ${siswa.NISN}</p>`;
+      
+      let tabel = `<table><thead><tr><th>Nama Kolom</th><th>Nilai</th></tr></thead><tbody>`;
+      for (const [k, v] of Object.entries(siswa)) {
+        if (k !== "NISN" && k !== "NAMA" && k !== "KELAS") {
+          tabel += `<tr><td>${k}</td><td>${v}</td></tr>`;
+        }
+      }
+      tabel += `</tbody></table>`;
+
+      hasilDiv.innerHTML = `
+        <div class='card' id='printArea'>
+          ${judul}
+          ${tabel}
+          <button class='print-btn' onclick='window.print()'>🖨️ Cetak Laporan</button>
+        </div>`;
+    }
   </script>
 </body>
 </html>
