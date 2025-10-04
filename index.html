@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cek Nilai Siswa Geografi</title>
+<title>Cek Laporan Nilai Geografi</title>
 <style>
   body {
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(135deg, #e0f7fa, #e1f5fe);
+    background: linear-gradient(135deg, #e3f2fd, #e0f7fa);
     min-height: 100vh;
     margin: 0;
     display: flex;
@@ -18,8 +18,8 @@
   }
   h1 {
     color: #0d47a1;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
     text-align: center;
   }
   .search-box {
@@ -56,7 +56,7 @@
     background: #0d47a1;
   }
   .card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     padding: 25px 30px;
@@ -110,8 +110,6 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  /* Tampilan cetak */
   @media print {
     body {
       background: white;
@@ -132,7 +130,7 @@
 </style>
 </head>
 <body>
-  <h1>📘 Sistem Cek Nilai Online Geografi</h1>
+  <h1>📘 Sistem Laporan Nilai Online Geografi</h1>
 
   <div class="search-box">
     <input type="text" id="nisnInput" placeholder="Ketikkan NISN Anda...">
@@ -143,14 +141,19 @@
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
-    const nisnValid = [
-      "0097758369",
-      "0097931054",
-      "0093693520",
-      "0103307505",
-      "0102108205",
-      "0102371225"
-    ];
+    
+    // Daftar NISN + Nama
+    const nisnList = {
+      "0097758369": "AIRA PUTRI OKTAVIANI",
+      "0097931054": "AIRISH BILAL NABAWI",
+      "0093693520": "ALDHO JUNADIL ILHAM",
+      "0103307505": "ALICIA PUTRI DEVINIRA",
+      "0102108205": "ANNISA NUR SYIFA",
+      "0102371225": "ARYA BHIMA SUTANARENDRA HADIUSODO",
+      "0094238385": "AYRA DIAH AGNESA",
+      "0105461165": "AZHAR HIDAYAT DHARMA ATMOKO"
+    };
+
     let dataSiswa = [];
 
     async function loadData() {
@@ -175,9 +178,8 @@
         return;
       }
 
-      // Cek apakah NISN terdaftar dalam daftar yang diizinkan
-      if (!nisnValid.includes(nisn)) {
-        hasilDiv.innerHTML = "<p class='notfound'>❌ NISN tidak terdaftar atau salah. Silakan periksa kembali.</p>";
+      if (!nisnList[nisn]) {
+        hasilDiv.innerHTML = "<p class='notfound'>❌ NISN tidak terdaftar. Periksa kembali.</p>";
         return;
       }
 
@@ -190,9 +192,9 @@
         return;
       }
 
-      const judul = `<h2>${siswa.NAMA} (${siswa.KELAS})</h2><p><strong>NISN:</strong> ${siswa.NISN}</p>`;
+      const judul = `<h2>${nisnList[nisn]} (${siswa.KELAS || "Kelas Tidak Tersedia"})</h2><p><strong>NISN:</strong> ${siswa.NISN}</p>`;
       
-      let tabel = `<table><thead><tr><th>Nama Kolom</th><th>Nilai</th></tr></thead><tbody>`;
+      let tabel = `<table><thead><tr><th>Komponen Nilai</th><th>Nilai</th></tr></thead><tbody>`;
       for (const [k, v] of Object.entries(siswa)) {
         if (k !== "NISN" && k !== "NAMA" && k !== "KELAS") {
           tabel += `<tr><td>${k}</td><td>${v}</td></tr>`;
