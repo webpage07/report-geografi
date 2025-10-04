@@ -29,7 +29,7 @@
     flex-wrap: wrap;
     justify-content: center;
   }
-  input[type="text"] {
+  select {
     padding: 10px 15px;
     width: 280px;
     border: 2px solid #90caf9;
@@ -37,8 +37,9 @@
     outline: none;
     transition: 0.3s;
     font-size: 15px;
+    background: white;
   }
-  input[type="text"]:focus {
+  select:focus {
     border-color: #1976d2;
     box-shadow: 0 0 5px #1976d2;
   }
@@ -135,7 +136,15 @@
   <h1>📘 Sistem Cek Nilai Online Geografi</h1>
 
   <div class="search-box">
-    <input type="text" id="nisnInput" placeholder="Masukkan NISN siswa...">
+    <select id="nisnSelect">
+      <option value="">Pilih NISN Siswa...</option>
+      <option value="0097758369">0097758369</option>
+      <option value="0097931054">0097931054</option>
+      <option value="0093693520">0093693520</option>
+      <option value="0103307505">0103307505</option>
+      <option value="0102108205">0102108205</option>
+      <option value="0102371225">0102371225</option>
+    </select>
     <button onclick="cariNilai()">Cari Nilai</button>
   </div>
 
@@ -158,12 +167,12 @@
     }
 
     async function cariNilai() {
-      const nisn = document.getElementById("nisnInput").value.trim();
+      const nisn = document.getElementById("nisnSelect").value.trim();
       const hasilDiv = document.getElementById("hasil");
       hasilDiv.innerHTML = "";
 
       if (!nisn) {
-        hasilDiv.innerHTML = "<p class='notfound'>⚠️ Silakan masukkan NISN terlebih dahulu.</p>";
+        hasilDiv.innerHTML = "<p class='notfound'>⚠️ Silakan pilih NISN terlebih dahulu.</p>";
         return;
       }
 
@@ -172,7 +181,7 @@
       const siswa = dataSiswa.find(s => s.NISN === nisn);
 
       if (!siswa) {
-        hasilDiv.innerHTML = "<p class='notfound'>❌ Data dengan NISN tersebut tidak ditemukan.</p>";
+        hasilDiv.innerHTML = "<p class='notfound'>❌ Data dengan NISN tersebut tidak ditemukan di Google Sheet.</p>";
         return;
       }
 
