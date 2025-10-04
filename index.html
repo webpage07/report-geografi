@@ -3,162 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laporan Nilai Siswa Geografi</title>
+<title>Laporan Nilai Geografi</title>
 <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to right, #eef2f3, #8e9eab);
-    margin: 0;
-    padding: 20px;
-  }
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@400;600&display=swap');
 
-  h2 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
+    body {
+        background: radial-gradient(circle at top, #020024, #090979, #00d4ff);
+        font-family: 'Poppins', sans-serif;
+        color: #fff;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 40px 20px;
+    }
 
-  .container {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
+    h1 {
+        font-family: 'Orbitron', sans-serif;
+        color: #00ffff;
+        font-size: 2em;
+        text-shadow: 0 0 15px #00ffff;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-  input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
+    .search-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid #00ffff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 0 20px #00ffff80;
+        width: 90%;
+        max-width: 500px;
+    }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    font-size: 13px;
-  }
+    input {
+        padding: 12px 15px;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 1em;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #00ffff;
+        font-family: 'Orbitron', sans-serif;
+        box-shadow: inset 0 0 10px #00ffff50;
+    }
 
-  th, td {
-    padding: 8px;
-    border: 1px solid #ccc;
-  }
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #00ffff, #0077ff);
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+        font-family: 'Orbitron', sans-serif;
+        transition: all 0.3s;
+    }
 
-  th {
-    background: #34495e;
-    color: white;
-  }
+    button:hover {
+        background: linear-gradient(90deg, #00d4ff, #00ffaa);
+        box-shadow: 0 0 15px #00ffff;
+    }
 
-  tr:nth-child(even) {
-    background: #f2f2f2;
-  }
+    table {
+        width: 100%;
+        max-width: 1000px;
+        margin-top: 30px;
+        border-collapse: collapse;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 0 25px #00ffff40;
+        animation: fadeIn 0.8s ease-in-out;
+    }
 
-  tr:hover {
-    background: #dfe6e9;
-  }
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-  .footer {
-    margin-top: 20px;
-    text-align: center;
-    color: #555;
-    font-size: 13px;
-  }
+    th {
+        background: rgba(0, 255, 255, 0.2);
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-weight: 600;
+    }
+
+    tr:hover {
+        background: rgba(0, 255, 255, 0.1);
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    #result {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 1.2em;
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+    }
 </style>
 </head>
 <body>
-  <h2>Laporan Nilai Siswa Geografi</h2>
-  <div class="container">
-    <input type="text" id="searchInput" placeholder="🔍 Cari berdasarkan NISN atau Nama...">
+    <h1>Laporan Nilai Geografi</h1>
+    <div class="search-box">
+        <input type="text" id="nisnInput" placeholder="Masukkan NISN siswa...">
+        <button onclick="cariData()">Tampilkan Nilai</button>
+    </div>
 
-    <table id="nilaiTable">
-      <thead>
-        <tr>
-          <th>NISN</th>
-          <th>NAMA</th>
-          <th>KELAS</th>
-          <th>Tugas 1 Konsep Geografi</th>
-          <th>Tugas 2 Diagram Cabang Ilmu Geografi</th>
-          <th>Tugas 3 Contoh Prinsip Geografi</th>
-          <th>Tugas 4 Perkembangan Ilmu Geografi</th>
-          <th>Catatan Dasar Geografi</th>
-          <th>Sumatif harian 1 Dasar Geografi</th>
-          <th>Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri</th>
-          <th>Tugas 6 Menghitung Skala Peta</th>
-          <th>Tugas 7 Menghitung Skala Foto Udara</th>
-          <th>Tugas 8 Manfaat SIG</th>
-          <th>Catatan Peta, Pengindraan Jauh, SIG</th>
-          <th>Sumatif harian 2 Peta PJ SIG</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr><td colspan="15">Memuat data...</td></tr>
-      </tbody>
+    <div id="result"></div>
+    <table id="tabelNilai" style="display:none;">
+        <thead>
+            <tr>
+                <th>NISN</th>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Tugas 1 Konsep Geografi</th>
+                <th>Tugas 2 Diagram Cabang Ilmu Geografi</th>
+                <th>Tugas 3 Contoh Prinsip Geografi</th>
+                <th>Tugas 4 Perkembangan Ilmu Geografi</th>
+                <th>Catatan Dasar Geografi</th>
+                <th>Sumatif Harian 1 Dasar Geografi</th>
+                <th>Tugas 5</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
     </table>
-  </div>
-
-  <div class="footer">
-    © 2025 Sistem Nilai Online Geografi — Designed by Ali Imron
-  </div>
 
 <script>
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5-YH4IRwxf6aAIG6zyT_XFa-CD9ev60Bs0iF_GZ60aovblWb2LMdtZCkpKYs_DOxG7xciQmROdfYN/pub?gid=772414065&single=true&output=csv";
 
-// Daftar kolom yang ditampilkan (harus sama urutannya dengan header di Google Sheet)
-const allowedColumns = [
-  "NISN",
-  "NAMA",
-  "KELAS",
-  "Tugas 1 Konsep Geografi",
-  "Tugas 2 Diagram Cabang Ilmu Geografi",
-  "Tugas 3 Contoh Prinsip Geografi",
-  "Tugas 4 Perkembangan Ilmu Geografi",
-  "Catatan Dasar Geografi",
-  "Sumatif harian 1 Dasar Geografi",
-  "Tugas 5 Analisis Komponen Peta Topografi dan Persebaran Industri",
-  "Tugas 6 Menghitung Skala Peta",
-  "Tugas 7 Menghitung Skala Foto Udara",
-  "Tugas 8 Manfaat SIG",
-  "Catatan Peta, Pengindraan Jauh, SIG",
-  "Sumatif harian 2 Peta PJ SIG"
-];
+let dataSheet = [];
 
-async function loadData() {
-  const response = await fetch(sheetURL);
-  const data = await response.text();
-  const rows = data.split("\n").map(r => r.split(","));
-  const headers = rows[0].map(h => h.trim());
-  const tableBody = document.getElementById("tableBody");
-  tableBody.innerHTML = "";
-
-  // Ambil indeks kolom yang diperlukan
-  const indexes = allowedColumns.map(col => headers.indexOf(col));
-
-  for (let i = 1; i < rows.length; i++) {
-    const cols = rows[i];
-    if (cols.length < 3) continue;
-
-    const tr = document.createElement("tr");
-    indexes.forEach(idx => {
-      const td = document.createElement("td");
-      td.textContent = cols[idx] ? cols[idx].trim() : "";
-      tr.appendChild(td);
+fetch(sheetURL)
+    .then(res => res.text())
+    .then(csv => {
+        const rows = csv.split("\n").map(r => r.split(","));
+        const headers = rows[0];
+        dataSheet = rows.slice(1).map(r => {
+            let obj = {};
+            headers.forEach((h, i) => obj[h.trim()] = r[i] ? r[i].trim() : "");
+            return obj;
+        });
     });
-    tableBody.appendChild(tr);
-  }
+
+function cariData() {
+    const nisn = document.getElementById("nisnInput").value.trim();
+    const resultDiv = document.getElementById("result");
+    const table = document.getElementById("tabelNilai");
+    const tbody = table.querySelector("tbody");
+
+    if (!nisn) {
+        resultDiv.textContent = "⚠️ Masukkan NISN terlebih dahulu.";
+        table.style.display = "none";
+        return;
+    }
+
+    const siswa = dataSheet.find(d => d["NISN"] === nisn);
+
+    if (siswa) {
+        resultDiv.textContent = `✅ Data ditemukan untuk ${siswa["Nama"]}`;
+        table.style.display = "table";
+        tbody.innerHTML = `
+            <tr>
+                <td>${siswa["NISN"]}</td>
+                <td>${siswa["NAMA"] || siswa["Nama"] || "-"}</td>
+                <td>${siswa["KELAS"] || "-"}</td>
+                <td>${siswa["Tugas 1 Konsep Geografi"] || "-"}</td>
+                <td>${siswa["Tugas 2 Diagram Cabang Ilmu Geografi"] || "-"}</td>
+                <td>${siswa["Tugas 3 Contoh Prinsip Geografi"] || "-"}</td>
+                <td>${siswa["Tugas 4 Perkembangan Ilmu Geografi"] || "-"}</td>
+                <td>${siswa["Catatan Dasar Geografi"] || "-"}</td>
+                <td>${siswa["Sumatif harian 1 Dasar Geografi"] || "-"}</td>
+                <td>${siswa["Tugas 5"] || "-"}</td>
+            </tr>
+        `;
+    } else {
+        resultDiv.textContent = "❌ NISN tidak ditemukan dalam database.";
+        table.style.display = "none";
+    }
 }
-
-// Fitur pencarian
-document.getElementById("searchInput").addEventListener("keyup", function() {
-  const value = this.value.toLowerCase();
-  const rows = document.querySelectorAll("#tableBody tr");
-  rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(value) ? "" : "none";
-  });
-});
-
-loadData();
 </script>
 </body>
 </html>
